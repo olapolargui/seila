@@ -1,0 +1,94 @@
+//abaixo estara nossa UI
+
+local Lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/7yhx/kwargs_Ui_Library/main/source.lua"))()
+
+local UI = Lib:Create{
+    Theme = "Dark", -- or any other theme
+    Size = UDim2.new(0, 555, 0, 400) -- default
+ }
+ 
+ local Main = UI:Tab{
+    Name = "inico"
+ }
+ 
+ local Divider = Main:Divider{
+    Name = "inicio shit"
+ }
+ 
+ local QuitDivider = Main:Divider{
+    Name = "sair"
+ }
+ 
+ # Script para Arsenal com funcionalidades solicitadas
+
+# Importar bibliotecas
+import keyboard
+import pyautogui
+import time
+
+# Configurações
+cor_amigo = (0, 0, 255)  # Cor azul para equipe amiga
+cor_inimigo = (255, 0, 0)  # Cor vermelha para equipe inimiga
+fov_raio = 100  # Raio do campo de visão (FOV)
+ativo = False
+
+# Função para verificar a cor de um pixel
+def verificar_cor(pixel, cor_alvo, tolerancia=10):
+    r, g, b = pixel
+    r_alvo, g_alvo, b_alvo = cor_alvo
+    return abs(r - r_alvo) < tolerancia and abs(g - g_alvo) < tolerancia and abs(b - b_alvo) < tolerancia
+
+# Função para encontrar jogadores
+def encontrar_jogadores():
+    # Capturar a tela
+    tela = pyautogui.screenshot()
+
+    # Obter as dimensões da tela
+    largura, altura = tela.size
+
+    # Loop através de cada pixel
+    for x in range(largura):
+        for y in range(altura):
+            pixel = tela.getpixel((x, y))
+            if verificar_cor(pixel, cor_amigo):
+                print(f"Jogador amigo encontrado em ({x}, {y})")
+            elif verificar_cor(pixel, cor_inimigo):
+                print(f"Jogador inimigo encontrado em ({x}, {y})")
+
+# Função para desenhar FOV
+def desenhar_fov():
+    # Capturar a tela
+    tela = pyautogui.screenshot()
+
+    # Obter as dimensões da tela
+    largura, altura = tela.size
+
+    # Calcular coordenadas do centro da tela
+    centro_x = largura // 2
+    centro_y = altura // 2
+
+    # Desenhar círculo do FOV
+    pyautogui.draw.circle((centro_x, centro_y), fov_raio, color=cor_amigo, width=2)
+
+# Função principal
+def main():
+    global ativo
+
+    while True:
+        if keyboard.is_pressed("p"):
+            ativo = False
+            print("Script desativado")
+        elif keyboard.is_pressed("v"):
+            ativo = True
+            print("Script ativado")
+
+        if ativo:
+            encontrar_jogadores()
+            desenhar_fov()
+
+        time.sleep(0.1)
+
+# Executar o script
+if __name__ == "__main__":
+    main()
+
